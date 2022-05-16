@@ -41,7 +41,7 @@ function product(data){
                 const newOption = document.createElement("option");
                 newOption.value = i.colors;
                 newOption.innerHTML=i.colors;
-                colors.append(newOption);
+                optionsColors.append(newOption);
             }
         }
     }
