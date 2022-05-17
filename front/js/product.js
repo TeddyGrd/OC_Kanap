@@ -37,10 +37,10 @@ function product(data){
 
             itemImg.append(newImg);
             
-            for( i.colors of i.colors){
+            for( const x of i.colors){
                 const newOption = document.createElement("option");
-                newOption.value = i.colors;
-                newOption.innerHTML=i.colors;
+                newOption.value =  x;
+                newOption.innerHTML= x;
                 optionsColors.append(newOption);
             }
         }
