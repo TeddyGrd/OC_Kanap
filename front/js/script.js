@@ -25,9 +25,12 @@ function kanap(data){
     newLink.href = "./product.html?"+i._id;
     newImg.src = i.imageUrl;
     newImg.alt = i.altTxt;
-    newH3.innerHTML = i.name;
-    newp.innerHTML = i.description;
 
+    const nodeNewH3 = document.createTextNode(i.name);
+    const nodeNewP = document.createTextNode(i.description);
+
+    newH3.appendChild(nodeNewH3);
+    newp.appendChild(nodeNewP);
     sectionItem.append(newLink);
     newLink.append(newArticle);
     newArticle.append(newImg, newH3, newp);
