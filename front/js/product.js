@@ -28,21 +28,65 @@ function product(data){
     
             const newImg = document.createElement("img");
 
+            let productOption = {
+                nameProduct: i.name,
+                priceProduct: i.price,
+                idProduct: i._id,
+             };
     
             newImg.alt = i.altTxt;
             newImg.src = i.imageUrl;
-            h1Title.innerHTML = i.name;
-            price.innerHTML = i.price;
-            pId.innerHTML = i.description;
+
+            const newH1Title = document.createTextNode(i.name);
+            const newPrice = document.createTextNode(i.price);
+            const newPId = document.createTextNode(i.description);
+            
+            h1Title.appendChild(newH1Title);
+            price.appendChild(newPrice);
+            pId.appendChild(newPId);
 
             itemImg.append(newImg);
             
             for( const x of i.colors){
-                const newOption = document.createElement("option");
-                newOption.value =  x;
-                newOption.innerHTML= x;
-                optionsColors.append(newOption);
+                const option = document.createElement("option");
+                option.value =  x;
+                const newOption = document.createTextNode(x)
+                option.appendChild(newOption);
+                optionsColors.append(option);
             }
+            let buttonCart = document.getElementById("addToCart");
+            buttonCart.addEventListener("click", () => {
+                paramItem(productOption);
+            });
+
         }
     }
+}
+
+
+function paramItem(productOption){
+    
+    let optionsColors = document.getElementById("colors");
+    let itemQuantity = document.getElementById("quantity");
+
+    if( optionsColors.value && itemQuantity.value >=1){
+        console.log(optionsColors.value);
+        console.log(itemQuantity.value);
+
+        console.log (productOption);
+        let productLocalStorage = JSON.parse(localStorage.getItem("produit"));
+        
+        if(productLocalStorage){
+    
+        }
+        else{
+            productLocalStorage = [];
+            productLocalStorage.push(productOption);
+    
+            console.log(productLocalStorage);
+        }
+    }
+    else {
+        alert("veuillez à bien renseigner une couleur et votre nombre d'article");
+    } 
 }
