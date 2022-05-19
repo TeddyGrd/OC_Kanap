@@ -32,6 +32,9 @@ function product(data){
                 nameProduct: i.name,
                 priceProduct: i.price,
                 idProduct: i._id,
+                urlProduct: i.imageUrl,
+                descriptionProduct: i.description,
+                altProduct: i.altTxt,
              };
     
             newImg.alt = i.altTxt;
@@ -50,7 +53,9 @@ function product(data){
             for( const x of i.colors){
                 const option = document.createElement("option");
                 option.value =  x;
+
                 const newOption = document.createTextNode(x)
+
                 option.appendChild(newOption);
                 optionsColors.append(option);
             }
@@ -70,23 +75,35 @@ function paramItem(productOption){
     let itemQuantity = document.getElementById("quantity");
 
     if( optionsColors.value && itemQuantity.value >=1){
-        console.log(optionsColors.value);
-        console.log(itemQuantity.value);
+
+        productOption.colorsProduct = optionsColors.value;
+        productOption.numberProduct = itemQuantity.value;
 
         console.log (productOption);
-        let productLocalStorage = JSON.parse(localStorage.getItem("produit"));
+        let productLocalStorage = JSON.parse(localStorage.getItem("product"));
         
         if(productLocalStorage){
+            productLocalStorage.push(productOption);
+            localStorage.setItem("product",JSON.stringify(productLocalStorage));
+            console.log((productLocalStorage));
+            confirmation(productOption);
     
         }
         else{
             productLocalStorage = [];
             productLocalStorage.push(productOption);
-    
-            console.log(productLocalStorage);
+            localStorage.setItem("product",JSON.stringify(productLocalStorage));
+            console.log((productLocalStorage));
+            confirmation(productOption);
         }
     }
     else {
         alert("veuillez à bien renseigner une couleur et votre nombre d'article");
     } 
+}
+
+function confirmation(productOption){
+
+    const test = productOption.numberProduct +" "+ productOption.nameProduct +" "+productOption.colorsProduct +" a bien été ajouté au panier";
+    if(window.confirm(test));
 }
