@@ -1,9 +1,14 @@
 
 let productOption = JSON.parse(localStorage.getItem("product"));
 
-async function recupPanier(){
+
+
+function recupPanier(){
+     let priceTotal = 0;
+     let articleTotal = 0; 
+
     for(i of productOption){
-        
+
         const sectionCartItem = document.getElementById("cart__items");
         const newArticle = document.createElement("article");
         newArticle.classList.add("cart__item");
@@ -46,8 +51,8 @@ async function recupPanier(){
         const divContentSettings = newDiv(classCartItemContentSettings);
         const divContentSettingsQuantity = newDiv(classCartItemContentSettingsQuantity);
 
-        const pQuantity = newP("Qté : "+ numberArticle);
-        newInput.value = "42";
+        const pQuantity = newP("Qté :");
+        newInput.value = numberArticle;
         newInput.type = "number"
         newInput.min = "1";
         newInput.max = "100";
@@ -65,8 +70,70 @@ async function recupPanier(){
         divContent.append(divContentDescription,divContentSettings);
         newArticle.append(divImg,divContent);
         sectionCartItem.append(newArticle);
+
+      priceTotal = priceArticle*numberArticle + priceTotal;
+       articleTotal = parseInt(numberArticle) + articleTotal;
+
+
+    }
+     const articleTotaux = document.getElementById("totalQuantity");
+     const priceTotaux = document.getElementById("totalPrice");
+    articleTotaux.append(articleTotal);
+    priceTotaux.append(priceTotal);
+
+    selectionArticle();
+
+    let quantityValue = document.getElementsByClassName("itemQuantity");
+    for(let i = 0; i < quantityValue.length; i++) {
+        quantityValue[i].addEventListener('change', () => {
+            articleQuantity(quantityValue, i);
+        })
     }
 }
+
+function selectionArticle(){
+
+    let selectDelete = document.getElementsByClassName("deleteItem");
+
+    for(let i = 0; i < selectDelete.length; i++) {
+        selectDelete[i].addEventListener("click", () => {
+          deleteArticle(i);
+        })
+      }
+}
+
+function deleteArticle(i){
+    let articleSelectionner = productOption[i].idProduct;
+    let tab = []
+    tab = productOption;
+    tab.splice([i],1);
+    productOption = localStorage.setItem('product', JSON.stringify(tab));
+    console.log(articleSelectionner);
+    console.log(i);
+    location.reload();
+}
+
+function articleQuantity (quantityValue,i){
+
+        console.log(quantityValue[i].value);
+        productOption[i].numberProduct =  parseInt(quantityValue[i].value);
+        localStorage.setItem("product",JSON.stringify(productOption));
+        productOption = JSON.parse(localStorage.getItem("product"));  
+
+        // let priceTotal = 0;
+        // let articleTotal = 0; 
+        
+        
+        // priceTotal = productOption[i].priceProduct * quantityValue[i].value + priceTotal;
+        // articleTotal = parseInt(quantityValue[i].value) + articleTotal;
+
+        // const articleTotaux = document.getElementById("totalQuantity");
+        // const priceTotaux = document.getElementById("totalPrice");
+        // articleTotaux.append(articleTotal);
+        // priceTotaux.append(priceTotal);
+
+}
+
 
 
 recupPanier();
