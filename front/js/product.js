@@ -79,27 +79,75 @@ function paramItem(productOption){
         productOption.colorsProduct = optionsColors.value;
         productOption.numberProduct = itemQuantity.value;
 
-        console.log (productOption);
         let productLocalStorage = JSON.parse(localStorage.getItem("product"));
-        
+
         if(productLocalStorage){
-            productLocalStorage.push(productOption);
-            localStorage.setItem("product",JSON.stringify(productLocalStorage));
-            console.log((productLocalStorage));
-            confirmation(productOption);
-    
+            for(let  i = 0 ; i < productLocalStorage.length; i++){
+                if(productLocalStorage[i].idProduct == productOption.idProduct && productLocalStorage[i].colorsProduct == productOption.colorsProduct){
+                    return(
+                        productLocalStorage[i].numberProduct = parseInt(productLocalStorage[i].numberProduct) + parseInt(itemQuantity.value),
+                        localStorage.setItem("product",JSON.stringify(productLocalStorage)),
+                        productLocalStorage = JSON.parse(localStorage.getItem("product")),
+                        confirmation(productOption)
+                    )
+                }
+            }
+            for(let  i = 0 ; i < productLocalStorage.length; i++){
+                if (productLocalStorage[i].idProduct == productOption.idProduct && productLocalStorage[i].colorsProduct != productOption.colorsProduct || productLocalStorage[i].idProduct == productOption.idProduct) {
+                    return(        
+                        productLocalStorage.push(productOption),
+                        localStorage.setItem("product",JSON.stringify(productLocalStorage)),
+                        (productLocalStorage = JSON.parse(localStorage.getItem("product"))),
+                        confirmation(productOption)
+                        )
+                }
+            }
+            for(let  i = 0 ; i < productLocalStorage.length; i++){
+                if (productLocalStorage[i].idProduct != productOption.idProduct && productLocalStorage[i].colorsProduct != productOption.colorsProduct || productLocalStorage[i].idProduct == productOption.idProduct) {
+                    return(        
+                        productLocalStorage.push(productOption),
+                        localStorage.setItem("product",JSON.stringify(productLocalStorage)),
+                        (productLocalStorage = JSON.parse(localStorage.getItem("product"))),
+                        confirmation(productOption)
+                        )
+                }
+            }
+            for(let  i = 0 ; i >= productLocalStorage.length; i++){
+                    return(        
+                        productLocalStorage.push(productOption),
+                        localStorage.setItem("product",JSON.stringify(productLocalStorage)),
+                        (productLocalStorage = JSON.parse(localStorage.getItem("product"))),
+                        confirmation(productOption)
+                        )
+                }
         }
         else{
             productLocalStorage = [];
             productLocalStorage.push(productOption);
             localStorage.setItem("product",JSON.stringify(productLocalStorage));
-            console.log((productLocalStorage));
             confirmation(productOption);
         }
+
     }
     else {
         alert("veuillez à bien renseigner une couleur et votre nombre d'article");
     } 
+}
+
+function productStorage(productLocalStorage, productOption){
+
+    if(productLocalStorage){
+        productLocalStorage.push(productOption);
+        localStorage.setItem("product",JSON.stringify(productLocalStorage));
+        confirmation(productOption);
+    }
+    else{
+        productLocalStorage = [];
+        productLocalStorage.push(productOption);
+        localStorage.setItem("product",JSON.stringify(productLocalStorage));
+        confirmation(productOption);
+    }
+
 }
 
 function confirmation(productOption){
