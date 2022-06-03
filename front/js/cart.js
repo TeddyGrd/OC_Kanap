@@ -1,11 +1,11 @@
 
 let productOption = JSON.parse(localStorage.getItem("product"));
+let formKey = JSON.parse(localStorage.getItem("form"));
 
-
+let priceTotal = 0;
+let articleTotal = 0; 
 
 function recupPanier(){
-     let priceTotal = 0;
-     let articleTotal = 0; 
 
     for(i of productOption){
 
@@ -71,24 +71,42 @@ function recupPanier(){
         newArticle.append(divImg,divContent);
         sectionCartItem.append(newArticle);
 
-      priceTotal = priceArticle*numberArticle + priceTotal;
-       articleTotal = parseInt(numberArticle) + articleTotal;
-
+        priceTotal = priceArticle*numberArticle + priceTotal;
+        articleTotal = parseInt(numberArticle) + articleTotal;
 
     }
-     const articleTotaux = document.getElementById("totalQuantity");
-     const priceTotaux = document.getElementById("totalPrice");
+
+    const articleTotaux = document.getElementById("totalQuantity");
+    const priceTotaux = document.getElementById("totalPrice");
     articleTotaux.append(articleTotal);
     priceTotaux.append(priceTotal);
 
     selectionArticle();
 
     let quantityValue = document.getElementsByClassName("itemQuantity");
+
     for(let i = 0; i < quantityValue.length; i++) {
         quantityValue[i].addEventListener('change', () => {
             articleQuantity(quantityValue, i);
         })
     }
+
+    const submitButton = document.getElementById("order");
+    submitButton.addEventListener("click", () => {
+        formulaire();
+    } )
+
+    const formName = document.getElementById("firstName");
+    const formLastName = document.getElementById("lastName");
+    const formAddress = document.getElementById("address");
+    const formCity = document.getElementById("city");
+    const formEmail = document.getElementById("email");
+
+    formName.value = formKey[0].Prénom;
+    formLastName.value = formKey[0].Nom;
+    formAddress.value = formKey[0].Adresse;
+    formCity.value = formKey[0].Ville;
+    formEmail.value = formKey[0].Email;
 }
 
 function selectionArticle(){
@@ -115,25 +133,38 @@ function deleteArticle(i){
 
 function articleQuantity (quantityValue,i){
 
-        console.log(quantityValue[i].value);
-        productOption[i].numberProduct =  parseInt(quantityValue[i].value);
-        localStorage.setItem("product",JSON.stringify(productOption));
-        productOption = JSON.parse(localStorage.getItem("product"));  
-
-        // let priceTotal = 0;
-        // let articleTotal = 0; 
-        
-        
-        // priceTotal = productOption[i].priceProduct * quantityValue[i].value + priceTotal;
-        // articleTotal = parseInt(quantityValue[i].value) + articleTotal;
-
-        // const articleTotaux = document.getElementById("totalQuantity");
-        // const priceTotaux = document.getElementById("totalPrice");
-        // articleTotaux.append(articleTotal);
-        // priceTotaux.append(priceTotal);
+    productOption[i].numberProduct =  parseInt(quantityValue[i].value);
+    localStorage.setItem("product",JSON.stringify(productOption));
+    productOption = JSON.parse(localStorage.getItem("product"));
+    
+    afficheTotal(quantityValue,i);
 
 }
 
+
+function afficheTotal(quantityValue,i){
+    
+    priceTotal = 0;
+    articleTotal = 0; 
+
+
+    const articleTotaux = document.getElementById("totalQuantity");
+    const priceTotaux = document.getElementById("totalPrice");
+
+    for(let x = 0 ; x < productOption.length ; x++ ){
+
+        priceTotal = productOption[x].priceProduct * quantityValue[x].value + priceTotal,
+        articleTotal = parseInt(quantityValue[x].value) + articleTotal;
+    }
+    
+    priceTotaux.append(priceTotal);
+
+    articleTotaux.innerText = "";
+    articleTotaux.append(articleTotal);
+    priceTotaux.innerText = "";
+    priceTotaux.append(priceTotal);
+    
+}
 
 
 recupPanier();
@@ -149,4 +180,53 @@ function newP(par){
     paramP = document.createTextNode(par);
     newP.appendChild(paramP);
     return newP
+}
+
+
+function formulaire(){
+
+    const formName = document.getElementById("firstName");
+    const formLastName = document.getElementById("lastName");
+    const formAddress = document.getElementById("address");
+    const formCity = document.getElementById("city");
+    const formEmail = document.getElementById("email");
+
+    const formData = {
+        Prénom: formName.value,
+        Nom: formLastName.value,
+        Adresse: formAddress.value,
+        Ville : formCity.value,
+        Email: formEmail.value,
+    }
+
+    console.log(validateName(formLastName.value))
+
+    if(validateName(formName.value) && validateName(formLastName.value) && formAddress.value && formCity.value && formAddress.value && validateEmail(formEmail.value)){
+
+        let formLocalStorage = JSON.parse(localStorage.getItem("form"));
+        formLocalStorage = [];
+        formLocalStorage.push(formData);
+        localStorage.setItem("form",JSON.stringify(formLocalStorage));
+    }
+}
+
+function validateEmail(email){
+    let emailExp = /^(([^<>()[]\.,;:s@]+(.[^<>()[]\.,;:s@]+)*)|(.+))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/;
+    let valid = emailExp.test(email);
+
+    if(valid) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function validateName(name){
+    let nameExp = /^([a-zA-Z ]+)$/;
+    let valid = nameExp.test(name);
+
+    if(valid) {
+        return true;
+    } else {
+        return false;
+    }
 }
