@@ -1,6 +1,5 @@
 
 let productOption = JSON.parse(localStorage.getItem("product"));
-let formKey = JSON.parse(localStorage.getItem("form"));
 
 let priceTotal = 0;
 let articleTotal = 0; 
@@ -74,6 +73,7 @@ function recupPanier(){
         priceTotal = priceArticle*numberArticle + priceTotal;
         articleTotal = parseInt(numberArticle) + articleTotal;
 
+
     }
 
     const articleTotaux = document.getElementById("totalQuantity");
@@ -93,20 +93,8 @@ function recupPanier(){
 
     const submitButton = document.getElementById("order");
     submitButton.addEventListener("click", () => {
-        formulaire();
+        formulaire(productOption);
     } )
-
-    const formName = document.getElementById("firstName");
-    const formLastName = document.getElementById("lastName");
-    const formAddress = document.getElementById("address");
-    const formCity = document.getElementById("city");
-    const formEmail = document.getElementById("email");
-
-    formName.value = formKey[0].Prénom;
-    formLastName.value = formKey[0].Nom;
-    formAddress.value = formKey[0].Adresse;
-    formCity.value = formKey[0].Ville;
-    formEmail.value = formKey[0].Email;
 }
 
 function selectionArticle(){
@@ -126,8 +114,6 @@ function deleteArticle(i){
     tab = productOption;
     tab.splice([i],1);
     productOption = localStorage.setItem('product', JSON.stringify(tab));
-    console.log(articleSelectionner);
-    console.log(i);
     location.reload();
 }
 
@@ -183,7 +169,7 @@ function newP(par){
 }
 
 
-function formulaire(){
+function formulaire(productOption){
 
     const formName = document.getElementById("firstName");
     const formLastName = document.getElementById("lastName");
@@ -191,22 +177,49 @@ function formulaire(){
     const formCity = document.getElementById("city");
     const formEmail = document.getElementById("email");
 
-    const formData = {
-        Prénom: formName.value,
-        Nom: formLastName.value,
-        Adresse: formAddress.value,
-        Ville : formCity.value,
-        Email: formEmail.value,
-    }
-
-    console.log(validateName(formLastName.value))
-
     if(validateName(formName.value) && validateName(formLastName.value) && formAddress.value && formCity.value && formAddress.value && validateEmail(formEmail.value)){
 
-        let formLocalStorage = JSON.parse(localStorage.getItem("form"));
-        formLocalStorage = [];
-        formLocalStorage.push(formData);
-        localStorage.setItem("form",JSON.stringify(formLocalStorage));
+        const contact = {
+            firstName: formName.value,
+            lastName: formLastName.value,
+            address: formAddress.value,
+            city : formCity.value,
+            email: formEmail.value,
+        }
+
+        let products = [];
+
+        for(let i = 0 ; i < productOption.length; i++){
+            products.push(productOption[i].idProduct)
+            console.log(products);
+        }
+
+        const sendForm = {
+            products,
+            contact
+        }
+
+        let options =  fetch("http://localhost:5500/api/products/order",{
+             method: "POST",
+             body: JSON.stringify(sendForm),
+             headers: {
+                 "Accept": "application/json",
+                 "Content-Type" : "application/json"
+             }
+         });
+         options.then(async(response)=>{
+            try{
+                const contenue = await response.json();
+                console.log(contenue)
+                if (response.ok){
+                    localStorage.setItem("responseId", contenue.orderId);
+                    window.location = "confirmation.html";
+                }
+            }
+            catch(e){
+                console.log(e);
+            }
+         })   
     }
 }
 
