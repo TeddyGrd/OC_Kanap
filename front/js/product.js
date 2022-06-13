@@ -75,7 +75,7 @@ function product(data){
             let buttonCart = document.getElementById("addToCart");
             buttonCart.addEventListener("click", () => {
                 //Appel de la fonction d'envoi de donnée il prend en argument la variable contenant les donnée du produit recuperer plus haut 
-                paramItem(productOption);
+                settingItem(productOption);
             });
 
         }
@@ -83,7 +83,7 @@ function product(data){
 }
 
 
-function paramItem(productOption){
+function settingItem(productOption){
     
     //déclaration des variables contenant la couleur ainsi que la quantité choisie de l'utilisateur
     let optionsColors = document.getElementById("colors");
